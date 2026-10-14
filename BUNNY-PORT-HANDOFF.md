@@ -18,14 +18,14 @@ This document is an implementation handoff. Its creation did not change Scriptab
 Local checkout:
 
 ```text
-/Users/devness/Documents/ChatGPT/Dr-Mimi-Ijaz-Residency-Countdown-Calendar
+/Users/devness/Documents/ChatGPT/dr-mimi-ijaz-residency-countdown-calendar
 ```
 
 The task originally referenced a folder with spaces. The actual checkout now has the hyphenated name above; tools and write permissions may still reference the old path.
 
-Repository: [Dr-Mimi-Ijaz-Residency-Countdown-Calendar](https://github.com/devness-portfolio/Dr-Mimi-Ijaz-Residency-Countdown-Calendar)
+Repository: [dr-mimi-ijaz-residency-countdown-calendar](https://github.com/devness-portfolio/dr-mimi-ijaz-residency-countdown-calendar)
 
-Website URL configured in the project: [Dr. Mimi Ijaz’s Residency Countdown](https://devness-portfolio.github.io/Dr-Mimi-Ijaz-Residency-Countdown-Calendar/). The deployed contents were not re-audited for this handoff.
+Website URL configured in the project: [Dr. Mimi Ijaz’s Residency Countdown](https://devness-portfolio.github.io/dr-mimi-ijaz-residency-countdown-calendar/). The deployed contents were not re-audited for this handoff.
 
 | File | Role |
 | --- | --- |

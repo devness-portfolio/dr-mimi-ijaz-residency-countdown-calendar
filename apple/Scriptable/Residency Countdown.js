@@ -1,6 +1,6 @@
 // Residency countdown for the free Scriptable app.
 // Dates use midnight in the device's current timezone, like the website.
-const WEBSITE_URL = "https://devness-portfolio.github.io/Dr-Mimi-Ijaz-Residency-Countdown-Calendar/";
+const WEBSITE_URL = "https://devness-portfolio.github.io/dr-mimi-ijaz-residency-countdown-calendar/";
 const START = new Date(2022, 6, 1, 0, 0, 0);
 const END = new Date(2027, 6, 1, 0, 0, 0);
 const COLORS = {

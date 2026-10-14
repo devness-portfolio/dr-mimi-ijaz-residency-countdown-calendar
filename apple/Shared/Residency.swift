@@ -8,7 +8,7 @@ enum Residency {
         return (calendar.date(from: DateComponents(year: 2022, month: 7, day: 1))!,
                 calendar.date(from: DateComponents(year: 2027, month: 7, day: 1))!)
     }
-    static let website = URL(string: "https://devness-portfolio.github.io/Dr-Mimi-Ijaz-Residency-Countdown-Calendar/")!
+    static let website = URL(string: "https://devness-portfolio.github.io/dr-mimi-ijaz-residency-countdown-calendar/")!
 }
 
 struct Countdown {
