@@ -66,3 +66,13 @@ Reduced Motion shows changing still poses. Animation pauses while the page is hi
 5. Wait for deployment, then open the site link shown on the Pages screen.
 
 All asset paths are relative, so repository subpaths work. No custom build workflow is required.
+
+### Halloween and fall 2026
+
+The seasonal design runs from October 1 through Thanksgiving Day, November 26, 2026, in the device's local timezone. October includes a lavender witch hat, friendly ghosts/bat, and Halloween puns. November switches to a warm fall palette, scarf, and fall puns. The standard design returns at midnight November 27; residency completion always takes priority. Production residency dates are unchanged.
+
+Tap the website bunny to cycle through catching a red leaf, sipping coffee in a scarf, gathering leaves, hugging a pumpkin, and familiar doctor activities. Automatic activities continue between resting pauses. Reduced Motion uses still poses. Seasonal encouragement rotates in the banner every 14 seconds and with bunny activities; Halloween wording stops November 1. Apple and Scriptable widgets show matching seasonal poses and puns at half-hour refreshes. Widget delivery timing is controlled by the OS.
+
+The website checks the season every countdown tick and on returning to the page. No new dependencies, downloads, or animation loops are required. Rebuild/reinstall the Apple app/widget, or replace the script in Scriptable, to receive these changes.
+
+Seasonal checks: run `node tests/seasonal.cjs`, `node apple/Tests/scriptable.cjs`, and the Foundation checks in `apple/README.md`. They cover the Halloween/fall/Thanksgiving boundaries, rotating puns, seasonal drawings, tap activity cycling, reduced motion, and completion precedence.

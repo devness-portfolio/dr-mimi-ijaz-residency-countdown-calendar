@@ -48,10 +48,10 @@ async function run(family, date, inApp) {
 }
 (async()=>{
 for(const inApp of [false,true]) for(const family of ['small','medium','large','extraLarge',undefined]) {
- for(const date of [new Date(2022,6,1),new Date(2026,9,7),new Date(2027,5,30,23,59,59),new Date(2027,6,1),new Date(2028,0,1)]) await run(family,date,inApp);
+ for(const date of [new Date(2022,6,1),new Date(2026,9,7),new Date(2026,9,31,23,59,59),new Date(2026,10,1),new Date(2026,10,26,23,59,59),new Date(2026,10,27),new Date(2027,5,30,23,59,59),new Date(2027,6,1),new Date(2028,0,1)]) await run(family,date,inApp);
 }
 assert.ok(!/\p{Extended_Pictographic}/u.test(code));
-console.log('50 widget/in-app family/date scenarios passed: launch routing, countdown, celebration, native timers, refresh boundaries, artwork execution, and no emoji.');
+console.log('90 widget/in-app family/date scenarios passed: launch routing, countdown, celebration, native timers, refresh boundaries, artwork execution, and no emoji.');
 
 })().catch(e=>{console.error(e);process.exit(1)});
 
@@ -66,6 +66,23 @@ const scope={Point,Rect,Size,Color,Path,DrawContext};vm.createContext(scope);vm.
 const actions=['rest','jump','wave','heartbeat','notes','read','eat','tea','stretch','nap','celebrate']; const drawings=new Set();
 for(const a of actions){const result=vm.runInContext(`doctorBunny('${a}')`,scope);drawings.add(JSON.stringify(result));for(const part of result)for(const c of part.commands)for(const n of c.slice(1))assert(Number.isFinite(n));}
 assert.equal(drawings.size,11);
+const seasonalDrawings=new Set();
+for(const season of ['halloween','fall']) for(const action of ['catchLeaf','scarfCoffee','gatherLeaves','pumpkin']) {
+ const result=vm.runInContext(`doctorBunny('${action}',${season==='halloween'},${season==='fall'})`,scope);
+ seasonalDrawings.add(JSON.stringify(result));
+ for(const part of result)for(const c of part.commands)for(const n of c.slice(1))assert(Number.isFinite(n));
+}
+assert.equal(seasonalDrawings.size,8);
+for(const [date,expected] of [[new Date(2026,9,31),'halloween'],[new Date(2026,10,1),'fall'],[new Date(2026,10,26,23,59,59),'fall'],[new Date(2026,10,27),'']]) {
+ scope.date=date; assert.equal(vm.runInContext('seasonForDate(date)',scope),expected);
+}
+const web=require('../../js/countdown.js');
+for(let day=1;day<=30;day++)for(const month of [9,10,11]) {
+ scope.date=new Date(2026,month,day);
+ assert.equal(vm.runInContext('seasonForDate(date)',scope),web.seasonForDate(scope.date));
+}
+console.log('Eight seasonal widget drawings and web/Scriptable date parity passed.');
+
 for(let slot=0;slot<40;slot++) {scope.date=new Date(slot*1800000);assert.equal(vm.runInContext('activityForDate(date,false)',scope),slot%2===0?'rest':actions[1+Math.floor(slot/2)%10]);assert.equal(vm.runInContext('activityForDate(date,true)',scope),'celebrate');}
 for(const date of [new Date(2020,0,1),new Date(2022,6,1),new Date(2027,6,1),new Date(2028,0,1)]){scope.date=date;const s=vm.runInContext('calculateCountdown(date)',scope);assert(s.progress>=0&&s.progress<=100);for(const k of ['months','weeks','days','hours','minutes','seconds','totalDays'])assert(s[k]>=0);}
 

@@ -102,3 +102,26 @@ footer { display: flex; justify-content: center; align-items: center; gap: 14px;
   *, *::before, *::after { animation: none !important; transition: none !important; }
   #confetti { display: none; }
 }
+
+/* October 2026: static decorations respect reduced motion without extra animation. */
+:root.halloween { --ink:#584363; --muted:#776080; --pink:#9a5274; background:#f8edff; }
+.halloween body { background:radial-gradient(ellipse at 10% 25%,#ffe0c6,transparent 48%),radial-gradient(ellipse at 95% 65%,#e0ccf2,transparent 48%); }
+.halloween #countdown { background:#fffbf6f5; border-color:#efd8ee; }
+#seasonal-note { display:flex; flex-direction:column; align-items:center; gap:5px; margin:-8px 0 20px; }
+#seasonal-note span { font-size:9px; letter-spacing:1.6px; color:var(--muted); }
+.halloween .details > div { background:#fff0e3; border-color:#efd3bb; }
+.halloween .details > div:nth-child(2n) { background:#efe4fa; border-color:#ddc9ec; }
+.halloween .details > div:nth-child(3n) { background:#f8e8ef; border-color:#eccedc; }
+.halloween #progress-fill { background:linear-gradient(90deg,#c0a0d5,#e9ad86); }
+.halloween .spark { background:#b497cc; }
+.halloween .heart { background:#dfaa87; }
+.halloween #bunny-message { color:#76517c; }
+
+:root.fall { --ink:#644958; --muted:#80616b; --pink:#a45467; background:#fff0df; }
+.fall body { background:radial-gradient(ellipse at 10% 25%,#f9d8bc,transparent 48%),radial-gradient(ellipse at 95% 65%,#eee0ef,transparent 48%); }
+.fall #countdown { background:#fffbf5f5; border-color:#efdbcd; }
+.fall .details > div { background:#fff0e3; border-color:#efd3bb; }
+.fall .details > div:nth-child(2n) { background:#f4e8ef; border-color:#e5d4e2; }
+.fall #progress-fill { background:linear-gradient(90deg,#c3a1c3,#e8aa7e); }
+.fall #seasonal-note svg g > path:first-child, .fall #seasonal-note svg g > path:nth-last-child(-n+2) { display:none; }
+#seasonal-note span { line-height:1.6; min-height:3.2em; max-width:100%; letter-spacing:.6px; }

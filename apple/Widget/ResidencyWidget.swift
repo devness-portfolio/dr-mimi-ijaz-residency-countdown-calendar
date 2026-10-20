@@ -36,7 +36,7 @@ struct ResidencyWidgetView: View {
                 VStack(alignment: .leading) {
                     Text("Dr. Mimi Ijaz").font(.headline)
                     Text(entry.state.complete ? "YOU DID IT!" : "\(entry.state.days) days left")
-                    Text(entry.state.complete ? "Alhamdulillah" : "One day closer.").font(.caption)
+                    Text(entry.state.complete ? "Alhamdulillah" : (!entry.state.season.isEmpty ? entry.state.seasonalMessage : "One day closer.")).font(.caption)
                 }
             case .accessoryInline:
                 Text(entry.state.complete ? "Mimi, YOU DID IT!" : "Mimi: \(entry.state.days) days left")
@@ -46,7 +46,7 @@ struct ResidencyWidgetView: View {
             card
             #endif
         }
-        .containerBackground(for: .widget) { Palette.background }
+        .containerBackground(for: .widget) { !entry.state.season.isEmpty ? Palette.halloweenBackground : Palette.background }
     }
     private var card: some View {
         CountdownCard(state: entry.state, compact: family == .systemSmall, expanded: family == .systemLarge)

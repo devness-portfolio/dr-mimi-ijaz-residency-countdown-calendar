@@ -3,6 +3,7 @@ import SwiftUI
 enum Palette {
     static let ink = Color(red: 0.396, green: 0.314, blue: 0.388)
     static let pink = Color(red: 0.741, green: 0.404, blue: 0.553)
+    static let halloweenBackground = LinearGradient(colors: [Color(red: 1, green: 0.89, blue: 0.79), Color(red: 0.89, green: 0.81, blue: 0.96)], startPoint: .topLeading, endPoint: .bottomTrailing)
     static let background = LinearGradient(colors: [Color(red: 1, green: 0.973, blue: 0.953), Color(red: 0.949, green: 0.925, blue: 0.973)], startPoint: .topLeading, endPoint: .bottomTrailing)
 }
 
@@ -32,7 +33,7 @@ struct CountdownCard: View {
                 if expanded { verse }
             } else {
                 HStack(alignment: .center, spacing: compact ? 4 : 12) {
-                    DoctorBunny(activity: activity)
+                    DoctorBunny(activity: activity, halloween: state.halloween, fall: state.season == "fall")
                         .frame(width: compact ? 46 : (expanded ? 110 : 54), height: compact ? 58 : (expanded ? 122 : 60))
                     VStack(alignment: .leading, spacing: 0) {
                         Text(state.days.formatted())
@@ -42,7 +43,7 @@ struct CountdownCard: View {
                         Text("days left").font(compact ? .caption : (expanded ? .title3 : .subheadline))
                     }
                 }
-                if !compact { Text(activity.message).font(.caption).lineLimit(2).minimumScaleFactor(0.85) }
+                if !compact || !state.season.isEmpty { Text(!state.season.isEmpty ? state.seasonalMessage : activity.message).font(compact ? .caption2 : .caption).lineLimit(2).minimumScaleFactor(0.85) }
                 GeometryReader { geometry in
                     Capsule().fill(Palette.pink.opacity(0.15))
                         .overlay(alignment: .leading) {
@@ -79,6 +80,8 @@ struct CountdownCard: View {
 // Lightweight vector artwork shares the website mascot’s cream, blush and lavender palette.
 struct DoctorBunny: View {
     let activity: BunnyActivity
+    var halloween = false
+    var fall = false
     var body: some View {
         Canvas { context, size in
             context.scaleBy(x: size.width / 180, y: size.height / 220)
@@ -151,7 +154,46 @@ struct DoctorBunny: View {
             line([CGPoint(x:70,y:118),CGPoint(x:70,y:137),CGPoint(x:76,y:144),CGPoint(x:83,y:144),CGPoint(x:88,y:137),CGPoint(x:88,y:124)],color:ink,width:3)
             line([CGPoint(x:114,y:120),CGPoint(x:114,y:activity == .heartbeat ? 134 : 151)],width:3)
             oval(108,activity == .heartbeat ? 129 : 147,12,12,lavender)
+            if halloween {
+                let peach = Color(red: 0.96, green: 0.74, blue: 0.59)
+                var hat = Path(); hat.move(to: CGPoint(x: 67, y: 59))
+                hat.addLine(to: CGPoint(x: 84, y: 13)); hat.addLine(to: CGPoint(x: 113, y: 55)); hat.closeSubpath()
+                context.fill(hat, with: .color(lavender)); context.stroke(hat, with: .color(ink), lineWidth: 2)
+                oval(58, 52, 66, 12, lavender)
+                line([CGPoint(x: 78, y: 43), CGPoint(x: 104, y: 43)], color: peach, width: 6)
+                oval(107, 156, 24, 20, peach)
+                line([CGPoint(x: 119, y: 156), CGPoint(x: 122, y: 151)], color: .green, width: 3)
+                oval(113, 163, 2, 3, ink, outline: false); oval(122, 163, 2, 3, ink, outline: false)
+            }
+            func leaf(_ x: CGFloat, _ y: CGFloat) {
+                var p = Path(); p.move(to: CGPoint(x:x, y:y+12))
+                p.addQuadCurve(to: CGPoint(x:x-8,y:y-12), control: CGPoint(x:x-19,y:y+2))
+                p.addLine(to: CGPoint(x:x,y:y-6)); p.addLine(to: CGPoint(x:x+7,y:y-17))
+                p.addQuadCurve(to: CGPoint(x:x,y:y+12), control: CGPoint(x:x+20,y:y+1)); p.closeSubpath()
+                context.fill(p, with: .color(Color(red:0.81,green:0.42,blue:0.41)))
+                context.stroke(p, with: .color(ink), lineWidth:1.5)
+                line([CGPoint(x:x,y:y+16),CGPoint(x:x,y:y-6)],width:1)
+            }
+            if fall || activity == .scarfCoffee {
+                box(65,122,52,10,blush); box(101,128,12,28,blush)
+            }
             switch activity {
+            case .catchLeaf:
+                oval(137,118,20,14,cream); leaf(147,110)
+            case .gatherLeaves:
+                leaf(55,176);leaf(76,183);leaf(98,177);leaf(126,181)
+                oval(110,151,18,14,cream);leaf(105,145)
+            case .pumpkin:
+                let peach = Color(red:0.96,green:0.74,blue:0.59)
+                oval(65,135,50,44,peach);oval(78,135,24,44,peach)
+                line([CGPoint(x:90,y:135),CGPoint(x:94,y:129)],color:Color(red:0.55,green:0.61,blue:0.45),width:4)
+                oval(58,149,16,20,cream);oval(106,149,16,20,cream)
+            case .scarfCoffee:
+                oval(113,121,18,17,.white);box(83,115,34,28,Color(red:0.87,green:0.77,blue:0.63))
+                line([CGPoint(x:89,y:120),CGPoint(x:111,y:120)],color:ink,width:3)
+                line([CGPoint(x:92,y:109),CGPoint(x:88,y:102),CGPoint(x:93,y:95)],color:lavender,width:1.5)
+                oval(73,127,18,15,cream)
+
             case .heartbeat:
                 oval(115,134,22,16,cream); heart(154,62)
             case .notes:

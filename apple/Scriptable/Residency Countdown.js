@@ -36,13 +36,29 @@ function calculateCountdown(now, start = START, end = END) {
 }
 
 
+// One-off 2026 season, through US Thanksgiving, in the device's local calendar.
+function seasonForDate(now) {
+  if (now.getFullYear() !== 2026) return '';
+  if (now.getMonth() === 9) return 'halloween';
+  return now.getMonth() === 10 && now.getDate() <= 26 ? 'fall' : '';
+}
+function isHalloween(now) { return seasonForDate(now) === 'halloween'; }
+function seasonalPun(season, index) {
+  const puns = ["You’re un-be-leaf-able, Dr. Mimi.", "I love you a latte, meri jaan.",
+    "You autumn know how proud I am.", "You’re brew-tiful.", "Falling for you, one day at a time."];
+  if (season === 'halloween') puns.push("You’re doing fang-tastic.", "A little boo, a lot of love.");
+  return puns[((index % puns.length) + puns.length) % puns.length];
+}
+
 const BUNNY_ACTIONS = ["jump", "wave", "heartbeat", "notes", "read", "eat", "tea", "stretch", "nap", "celebrate"];
 function activityForDate(now, complete) {
   if (complete) return "celebrate";
   const slot = Math.floor(now.getTime() / 1800000);
-  return slot % 2 === 0 ? "rest" : BUNNY_ACTIONS[((Math.floor(slot / 2) % BUNNY_ACTIONS.length) + BUNNY_ACTIONS.length) % BUNNY_ACTIONS.length];
+  const actions = seasonForDate(now) ? ["catchLeaf", "scarfCoffee", "gatherLeaves", "pumpkin"] : BUNNY_ACTIONS;
+  return slot % 2 === 0 ? "rest" : actions[((Math.floor(slot / 2) % actions.length) + actions.length) % actions.length];
 }
 function bunnyMessage(activity, now) {
+  if (seasonForDate(now)) return seasonalPun(seasonForDate(now), Math.floor(now.getTime() / 1800000));
   const messages = {
     jump: "One day closer to your next chapter.", wave: "Hello, my favorite doctor.",
     heartbeat: "Your kindness is part of the treatment.", notes: "Doctor’s note: you are doing beautifully.",
@@ -55,7 +71,7 @@ function bunnyMessage(activity, now) {
 }
 
 // Vector geometry from assets/bunny.svg, drawn locally: no downloads or extra files.
-function doctorBunny(activity = "rest") {
+function doctorBunny(activity = "rest", halloween = false, fall = false) {
   const canvas = new DrawContext();
   canvas.size = new Size(180, 220);
   canvas.opaque = false;
@@ -151,18 +167,33 @@ function doctorBunny(activity = "rest") {
   }
   if (activity === "stretch") { line([[22,71],[17,64]],"#cf92aa"); line([[157,71],[163,64]],"#cf92aa"); }
   if (activity === "celebrate") { heart(24,68); heart(154,64); }
+  function leaf(x,y) { paint("#cf6b69","#886a76",1.5,[["M",x,y+12],["Q",x-19,y+2,x-8,y-12],["L",x,y-6],["L",x+7,y-17],["Q",x+20,y+1,x,y+12],["Z"]]); line([[x,y+16],[x,y-6]],"#98576a",1); }
+  if (fall || activity === "scarfCoffee") { box(65,122,52,10,"#c293b2");box(101,128,12,28,"#c293b2"); }
+  if (activity === "catchLeaf") { ellipse(137,118,20,14);leaf(147,110); }
+  if (activity === "gatherLeaves") { for(const [x,y] of [[55,176],[76,183],[98,177],[126,181]])leaf(x,y);ellipse(110,151,18,14);leaf(105,145); }
+  if (activity === "pumpkin") { ellipse(65,135,50,44,"#f3be97");ellipse(78,135,24,44,"#f3be97");line([[90,135],[94,129]],"#8c9c73",4);ellipse(58,149,16,20);ellipse(106,149,16,20); }
+  if (activity === "scarfCoffee") { ellipse(113,121,18,17,"#ffffff");box(83,115,34,28,"#dfc4a1");line([[89,120],[111,120]],"#765541",3);line([[92,109],[88,102],[93,95]],"#baa4b5",1.5);ellipse(73,127,18,15); }
+  if (halloween) {
+    paint("#b99bd2","#886a76",2,[["M",67,59],["L",84,13],["L",113,55],["Z"]]);
+    ellipse(58,52,66,12,"#c9afe0"); line([[78,43],[104,43]],"#f3be97",6);
+    ellipse(107,156,24,20,"#f3be97");line([[119,156],[122,151]],"#8c9c73",3);
+    ellipse(113,163,2,3,"#886a76");ellipse(122,163,2,3,"#886a76");
+  }
   return canvas.getImage();
 }
 
 const now = new Date();
 const state = calculateCountdown(now);
 const activity = activityForDate(now, state.complete);
+const season = state.complete ? "" : seasonForDate(now);
+const halloween = season === "halloween";
+if (season) { COLORS.pink = new Color("9a5274"); COLORS.track = new Color("e8d9ef"); }
 const family = config.widgetFamily || "large";
 const small = family === "small";
 const large = family === "large" || family === "extraLarge";
 const widget = new ListWidget();
 const backdrop = new LinearGradient();
-backdrop.colors = [new Color("fff8f3"), new Color("f8e5ef"), new Color("eee7f4")];
+backdrop.colors = (season ? ["ffe3cd", "f4e3f2", "e3cff5"] : ["fff8f3", "f8e5ef", "eee7f4"]).map(hex => new Color(hex));
 backdrop.locations = [0, 0.5, 1];
 backdrop.startPoint = new Point(0, 0);
 backdrop.endPoint = new Point(1, 1);
@@ -195,7 +226,7 @@ function centered(parent, value, size, color = COLORS.ink, serif = false) {
   return label;
 }
 function bunny(parent, height) {
-  const image = parent.addImage(doctorBunny(activity));
+  const image = parent.addImage(doctorBunny(activity, halloween, season === "fall"));
   image.imageSize = new Size(height * 180 / 220, height);
   image.applyFittingContentMode();
 }
@@ -320,9 +351,9 @@ if (state.complete) {
   progressBar(card, state.progress / 100);
   card.addSpacer(3);
   centered(card, `${(Math.floor(state.progress * 10) / 10).toFixed(1)}% complete`, 9, COLORS.muted);
-  if (!small) {
+  if (!small || season) {
     card.addSpacer(large ? 4 : 2);
-    const message = centered(card, bunnyMessage(activity, now), large ? 11 : 9, COLORS.pink, true);
+    const message = centered(card, bunnyMessage(activity, now), large ? 11 : small ? 8 : 9, COLORS.pink, true);
     message.lineLimit = 2;
   }
 }

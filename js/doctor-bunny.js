@@ -52,13 +52,14 @@
   };
   // Keep the hot-cup story between unrelated actions so it reads as its own scene.
   const activities = ['jump','wave','heartbeat','notes','read','eat','tea','stretch','nap','coffee','celebrate','hotDrink'];
-  const drinkActivities = ['tea','coffee','hotDrink'];
+  const drinkActivities = ['tea','coffee','hotDrink','scarfCoffee'];
+  const season = () => finished ? '' : document.documentElement.dataset.season || '';
   const messageTurns = {};
   const specificActivities = ['tea','coffee','hotDrink','nap','eat','stretch'];
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   let activity = 'rest', index = 0, messageIndex = 0, started = performance.now();
   let timer, frame, active = true, finished = false, milestone = null;
-  message.textContent = encouragements[0];
+  message.textContent = season() ? seasonalPun(season(), 0) : encouragements[0];
   const ink = '#886a76', cream = '#fff9ee', pink = '#f3c0cf', lavender = '#e1dcec';
   function ellipse(x,y,rx,ry,fill,stroke=ink) {
     ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();
@@ -82,6 +83,11 @@
     if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke(path);}
   }
   function text(value,x,y,size=13) {ctx.fillStyle=ink;ctx.font=`${size}px Georgia`;ctx.fillText(value,x,y);}
+  function leaf(x,y,angle=0) {
+    ctx.save();ctx.translate(x,y);ctx.rotate(angle);
+    shape('M0 12Q-19 2-8-12L0-6 7-17Q20 1 0 12Z','#cf6b69');
+    line([[0,16],[0,-6]],'#98576a',1.5);ctx.restore();
+  }
   function draw(now=performance.now()) {
     frame = undefined;
     const t = motion.matches ? (activity==='hotDrink'?2.8:drinkActivities.includes(activity)?2:0) : (now-started)/1000;
@@ -139,7 +145,7 @@
       // During the mishap the cup drops away while the free paw fans the tongue.
       const lift=activity==='hotDrink'&&t>=1.7 ? Math.max(0,1-(t-1.7)/.35) : sip;
       const x=76+(activity==='hotDrink'&&t>=1.7?22*(1-lift):0), y=138-29*lift;
-      const coffee=activity==='coffee';
+      const coffee=activity==='coffee'||activity==='scarfCoffee';
       line([[52,139],[x-2,y+13]],ink,3);
       ellipse(x+38,y+11,8,8,'#fff',ink);
       box(x,y,32,24,coffee?'#dfc4a1':activity==='hotDrink'?'#e1dcec':'#efbfd0',6);
@@ -161,12 +167,51 @@
     if(activity==='stretch'){line([[27,84],[23,78]],'#cf92aa',2);line([[149,82],[155,75]],'#cf92aa',2);}
     if(activity==='nap'){text('Z',138,49+slow*2,17);text('z',151,35+slow*3,12);}
     if(activity==='celebrate'){heart(33,65,.7);heart(147,57,.8);for(let i=0;i<5;i++){ctx.fillStyle=i%2?pink:lavender;ctx.fillRect(20+i*34,22+(i%2)*9+slow*3,4,7);}}
+    if(season()) {
+      if(activity==='scarfCoffee' || season()==='fall') {
+        box(65,122,52,10,'#c293b2',4);box(101,128,12,28,'#c293b2',3);
+        line([[102,150],[111,150]],'#f8d9b4',3);
+      }
+      if(activity==='catchLeaf') {
+        const fall=motion.matches?1:Math.min(1,t/2.5);
+        const x=148+Math.sin(fall*Math.PI*2)*12, y=20+fall*99;
+        line([[136,140],[148,128]],ink,3);ellipse(148,126,10,7,cream);
+        leaf(x,y,motion.matches?.3:slow*.35);
+      }
+      if(activity==='gatherLeaves') {
+        for(const [x,y,a] of [[55,176,-.6],[76,183,.6],[98,177,-.2],[126,181,.8]])leaf(x,y,a);
+        line([[136,132],[118,160]],ink,3);ellipse(118,160,9,7,cream);
+        leaf(108,155,slow*.12);
+      }
+      if(activity==='pumpkin') {
+        ellipse(90,157,25,22,'#f3be97');ellipse(90,157,12,22,'#f3be97');
+        line([[90,135],[94,129]],'#8c9c73',4);
+        line([[83,153],[83,155]],ink,2);line([[97,153],[97,155]],ink,2);
+        line([[86,163],[90,165],[94,163]],ink,2);
+        ellipse(65,157,8,10,cream);ellipse(115,157,8,10,cream);
+      }
+    }
+    if(season()==='halloween') {
+      // The hat and pocket pumpkin travel with every existing pose.
+      shape('M67 59L84 13Q92 24 113 55Z','#b99bd2');
+      ellipse(91,58,33,6,'#c9afe0');
+      line([[78,43],[104,43]],'#f3be97',6);
+      ellipse(119,166,12,10,'#f3be97');
+      line([[119,156],[122,151]],'#8c9c73',3);
+      line([[115,164],[115,165]],ink,2);line([[123,164],[123,165]],ink,2);
+      line([[117,170],[119,171],[122,169]],ink,1.5);
+    }
     ctx.restore();
     if(!motion.matches && active && !document.hidden) frame=requestAnimationFrame(draw);
   }
   function chooseMessage(next){
     if(finished) return 'You did it, Dr. Mimi. So proud of you!';
     const turn=messageIndex++;
+    if(season()) {
+      const messages = {catchLeaf:'You’re un-be-leaf-able, Dr. Mimi.', scarfCoffee:'I love you a latte, meri jaan.',
+        gatherLeaves:'You autumn know how proud I am.', pumpkin:'You’re the pick of the patch, meri jaan.'};
+      return messages[next] || seasonalPun(season(), turn);
+    }
     if(next==='rest') return encouragements[turn%encouragements.length];
     const pool=activityMessages[next];
     if(!specificActivities.includes(next)&&turn%3===0) return encouragements[turn%encouragements.length];
@@ -178,8 +223,9 @@
   function schedule(delay=7000){clearTimeout(timer);if(active&&!document.hidden)timer=setTimeout(advance,delay);}
   // Taps and automatic activities share a cursor, so a tap always moves forward.
   function nextActivity(){
-    let next=activities[index++%activities.length];
-    if(next===activity) next=activities[index++%activities.length];
+    const choices=season() ? ['catchLeaf','wave','scarfCoffee','heartbeat','gatherLeaves','read','pumpkin','nap'] : activities;
+    let next=choices[index++%choices.length];
+    if(next===activity) next=choices[index++%choices.length];
     return next;
   }
   function advance(){

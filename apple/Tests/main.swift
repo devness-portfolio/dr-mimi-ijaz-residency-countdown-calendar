@@ -31,7 +31,7 @@ print("Countdown boundary, completion, timezone, DST, progress, and timeline che
 
 let sample = Date(timeIntervalSince1970: 1791345600)
 let poses = (0..<40).map { BunnyActivity.at(sample.addingTimeInterval(Double($0) * 1800), complete: false) }
-assert(Set(poses) == Set(BunnyActivity.allCases))
+assert(Set(poses) == Set([.rest, .catchLeaf, .scarfCoffee, .gatherLeaves, .pumpkin]))
 assert(poses.filter { $0 == .rest }.count == 20)
 assert(BunnyActivity.at(sample, complete: true) == .celebrate)
 let poseDates = BunnyActivity.refreshDates(after: sample)
@@ -41,3 +41,29 @@ assert(poseDates.first!.timeIntervalSince(sample) <= 1800)
 let completion = Residency.milestones().end
 assert(BunnyActivity.refreshDates(after: completion.addingTimeInterval(-1)).contains(completion))
 print("Bunny pose rotation, resting intervals, completion and timeline ordering checks passed.")
+
+for zoneName in ["America/Chicago", "UTC", "Asia/Karachi"] {
+    let zone = TimeZone(identifier: zoneName)!
+    var calendar = Calendar(identifier: .gregorian); calendar.timeZone = zone
+    for (year, month, day, expected) in [(2026,9,30,false),(2026,10,1,true),(2026,10,31,true),(2026,11,1,false),(2027,10,20,false)] {
+        let date = calendar.date(from: DateComponents(year: year, month: month, day: day))!
+        assert(Countdown(date: date, timeZone: zone).halloween == expected)
+    }
+}
+print("Halloween local calendar boundaries passed in three timezones.")
+
+for zoneName in ["America/Chicago", "UTC", "Asia/Karachi"] {
+    let zone = TimeZone(identifier:zoneName)!
+    var calendar = Calendar(identifier:.gregorian); calendar.timeZone = zone
+    for (month,day,expected) in [(10,31,"halloween"),(11,1,"fall"),(11,10,"fall"),(11,26,"fall"),(11,27,"")] {
+        let date = calendar.date(from:DateComponents(year:2026,month:month,day:day,hour:23,minute:59,second:59))!
+        assert(Countdown(date:date,timeZone:zone).season == expected)
+    }
+    let end = calendar.date(from:DateComponents(year:2026,month:11,day:27))!
+    assert(Countdown(date:end,timeZone:zone).season.isEmpty)
+}
+let october = Date(timeIntervalSince1970:1791345600)
+let november = october.addingTimeInterval(86400 * 31)
+let fallPuns = Set((0..<14).map { Residency.pun(november.addingTimeInterval(Double($0)*1800),season:"fall") })
+assert(fallPuns.count == 5 && !fallPuns.contains("You’re doing fang-tastic."))
+print("Thanksgiving cutoff, fall transition, and rotating pun checks passed.")

@@ -1,6 +1,19 @@
 /* Both milestones are midnight in the visitor's local timezone. Months are zero-based. */
 const RESIDENCY_START = new Date(2022, 6, 1, 0, 0, 0);
 const RESIDENCY_END = new Date(2027, 6, 1, 0, 0, 0);
+// One-off 2026 season, through US Thanksgiving, in the device's local calendar.
+function seasonForDate(now) {
+  if (now.getFullYear() !== 2026) return '';
+  if (now.getMonth() === 9) return 'halloween';
+  return now.getMonth() === 10 && now.getDate() <= 26 ? 'fall' : '';
+}
+function isHalloween(now) { return seasonForDate(now) === 'halloween'; }
+function seasonalPun(season, index) {
+  const puns = ["You’re un-be-leaf-able, Dr. Mimi.", "I love you a latte, meri jaan.",
+    "You autumn know how proud I am.", "You’re brew-tiful.", "Falling for you, one day at a time."];
+  if (season === 'halloween') puns.push("You’re doing fang-tastic.", "A little boo, a lot of love.");
+  return puns[((index % puns.length) + puns.length) % puns.length];
+}
 const DAY = 86400000;
 
 // Clamp month-end dates: January 31 + one month becomes February 28/29.
@@ -53,7 +66,17 @@ function startPage() {
   }
 
   function update() {
-    const result = calculateCountdown(new Date());
+    const now = new Date();
+    const result = calculateCountdown(now);
+    const season = result.complete ? '' : seasonForDate(now);
+    const halloween = season === 'halloween';
+    document.documentElement.classList.toggle('fall', season === 'fall');
+    document.documentElement.dataset.season = season;
+    document.documentElement.classList.toggle('halloween', halloween);
+    document.getElementById('seasonal-note').hidden = !season;
+    document.querySelector('#seasonal-note span').textContent = season ? seasonalPun(season, Math.floor(now.getTime() / 14000)) : '';
+    document.getElementById('seasonal-note').setAttribute('aria-label', halloween ? 'Halloween encouragement' : 'Fall encouragement');
+    document.querySelector('meta[name="theme-color"]').content = halloween ? '#f8edff' : season ? '#fff0df' : '#fff8f3';
     if (result.complete) {
       countdown.hidden = true;
       celebration.hidden = false;
@@ -81,4 +104,4 @@ function startPage() {
   motion.addEventListener('change', confetti);
 }
 if (typeof document !== 'undefined') startPage();
-if (typeof module !== 'undefined') module.exports = { calculateCountdown, addMonths, RESIDENCY_START, RESIDENCY_END };
+if (typeof module !== 'undefined') module.exports = { seasonForDate, seasonalPun, isHalloween, calculateCountdown, addMonths, RESIDENCY_START, RESIDENCY_END };
