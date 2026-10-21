@@ -2,6 +2,8 @@
 
 A small love letter disguised as a countdown: pastel colors, an interactive doctor bunny, and an automatic celebration. No dependencies, build step, external requests, or tracking.
 
+[View the live countdown](https://devness-portfolio.github.io/dr-mimi-ijaz-residency-countdown-calendar/)
+
 ## Preview
 
 The website, native companions, and widgets share the same offline-first countdown experience.
