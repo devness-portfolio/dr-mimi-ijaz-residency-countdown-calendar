@@ -46,7 +46,7 @@ struct ResidencyWidgetView: View {
             card
             #endif
         }
-        .containerBackground(for: .widget) { !entry.state.season.isEmpty ? Palette.halloweenBackground : Palette.background }
+        .containerBackground(for: .widget) { entry.state.season == "dmv" ? Palette.dmvBackground : entry.state.season == "beach" ? Palette.beachBackground : entry.state.season == "ramadan" ? Palette.ramadanBackground : entry.state.season == "mardi" ? Palette.mardiBackground : entry.state.newYear ? Palette.newYearBackground : !entry.state.season.isEmpty ? Palette.halloweenBackground : Palette.background }
     }
     private var card: some View {
         CountdownCard(state: entry.state, compact: family == .systemSmall, expanded: family == .systemLarge)

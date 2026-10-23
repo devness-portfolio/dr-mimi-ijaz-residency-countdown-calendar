@@ -78,3 +78,77 @@ Tap the website bunny to cycle through catching a red leaf, sipping coffee in a 
 The website checks the season every countdown tick and on returning to the page. No new dependencies, downloads, or animation loops are required. Rebuild/reinstall the Apple app/widget, or replace the script in Scriptable, to receive these changes.
 
 Seasonal checks: run `node tests/seasonal.cjs`, `node apple/Tests/scriptable.cjs`, and the Foundation checks in `apple/README.md`. They cover the Halloween/fall/Thanksgiving boundaries, rotating puns, seasonal drawings, tap activity cycling, reduced motion, and completion precedence.
+
+### New Year 2027 theme
+
+December 25–31, 2026 uses pearl, lavender, and champagne styling. January 1, 2027 adds “Hello, 2027” and a graduation-year greeting with continuously looping decorative sparkles (still for Reduced Motion). The standard design returns January 2 at local midnight. The residency countdown continues throughout; graduation celebration still takes precedence on July 1, 2027. All dates use the device’s local timezone.
+
+Tap the party-hat doctor bunny to cycle through three paired scenes:
+
+| Activity | Pun | Affirmation |
+| --- | --- | --- |
+| Watching fireworks | You’re the spark of my year. | You make the future look bright, meri jaan. |
+| Ringing a bell | Ring in the year. You’ve already won my heart. | Every little victory deserves to be celebrated. |
+| Opening a wish card | My New Year’s resolution? More you. | Your next chapter is worth believing in, Dr. Mimi. |
+
+Website and offline apps share the interactive scenes. Native and Scriptable widgets use matching still poses, alternating with rest at half-hour slots; the OS controls delivery. Reduced Motion keeps still artwork and disables sparkle animation. Rebuild the apps/widgets and replace the installed Scriptable script to receive these changes.
+
+For local browser review, serve the repository and open `http://127.0.0.1:8088/?preview=nye` (starts ten seconds before midnight and rolls into January 1) or `http://127.0.0.1:8088/?preview=newyear` (January 1 at noon). Preview links work only on localhost/127.0.0.1, advance with elapsed time, and never change the production milestone configuration. The hosted site always uses the real date.
+
+New Year validation includes Christmas activation, midnight rollover, January 2 expiry, three paired scenes, Scriptable drawings and date parity, native scheduling in four timezones, countdown boundaries, and completion precedence. Native UI layout and real widget refresh delivery require Xcode/device verification.
+
+### Mardi Gras 2027 theme
+
+Carnival styling runs January 6 through February 9, 2027, inclusive, in the device’s local timezone, returning to the standard design at midnight February 10. Dates follow the [official New Orleans visitor guide](https://www.neworleans.com/events/holidays-seasonal/mardi-gras/). Residency completion retains priority. Later seasonal additions may take priority where their dates overlap.
+
+Soft purple, sage, and gold details surround the countdown. The doctor bunny wears a small crown and beads, and cycles through three scenes:
+
+| Activity | Pun | Affirmation |
+| --- | --- | --- |
+| Enjoying crawfish | You’re craw-some, Dr. Mimi. | Even on the hard days, you bring so much heart. |
+| Catching beads | I bead-lieve in you, meri jaan. | Every small win belongs in your parade. |
+| Enjoying king cake | You take the cake, my queen. | You deserve a little sweetness between rounds. |
+
+The website and offline apps share animated activities; Reduced Motion uses still poses. Native and Scriptable widgets use matching still artwork and half-hour activity/rest slots, subject to OS refresh delivery. Rebuild the apps/widgets and replace the installed Scriptable script to receive updates.
+
+Local preview: `http://127.0.0.1:8088/?preview=mardi` shows February 6 at noon without changing production dates. The same seasonal test commands above cover activation/expiry, all three scenes and messages, Scriptable drawings/date parity, native timezone boundaries, and existing theme regressions. Native UI layout still requires Xcode/device verification.
+
+## Ramadan 2027 preview
+
+The Ramadan theme uses expected civil dates **February 8–March 8, 2027**, with an exclusive end of March 9 at device-local midnight, matching the [SALAM Islamic Center calendar](https://salamcenter.org/ramadan-2027/). Dates remain provisional pending moon sighting. This decorative theme does not calculate prayer or fasting times. Ramadan takes precedence over Mardi Gras on February 8–9; Carnival remains scheduled January 6–February 9 beneath that precedence.
+
+Open `http://127.0.0.1:8088/?preview=ramadan` locally to review the moonlit blue, cream, and muted gold palette. Hosted and bundled apps continue to use the real device date. The greeting, crescent, prayer mat, activities, and paired encouragements are included in the website/app resources, Swift widgets, and standalone Scriptable script.
+
+| Activity | Pun | Affirmation |
+| --- | --- | --- |
+| Quiet dua on a prayer mat | You’re my favorite prayer-tner. | May your quiet moments bring peace to your busy days. |
+| Dates ready for iftar | My favorite date is iftar with you. | You deserve sweetness, nourishment, and a gentle evening. |
+| Resting patiently while fasting | Running on empty, still full of heart. | Take it one moment at a time, meri jaan. Your effort matters. |
+
+Reduced motion keeps every scene available as a static pose. Native widget poses follow the existing half-hour timeline with resting intervals; their delivery is controlled by the OS. Rebuild native apps/widgets and replace the installed Scriptable script to receive these changes. JavaScript and Scriptable regression checks and Swift Foundation logic tests cover the new season; native visual verification still requires Xcode/device testing.
+
+## Beach 2027 preview
+
+Beach runs April 1–30, 2027 in the device's local timezone, interpreting April–May as the interval before the May–June DMV theme. Production residency dates remain unchanged.
+
+Open `http://127.0.0.1:8088/?preview=beach` locally. Tap the bunny to cycle the three scenes. This preview uses a ticking April 15 clock only on localhost; deployed dates remain automatic.
+
+| Activity | Pun | Affirmation |
+| --- | --- | --- |
+| Build a sandcastle | You’re sand-sational, Dr. Mimi. | Every small step is building your beautiful next chapter. |
+| Collect a seashell | Shell yeah, I believe in you. | Your kindness leaves something lovely wherever you go. |
+| Read at the beach | You deserve a shore break, meri jaan. | Rest belongs in your story, too. Take a little time for yourself. |
+
+The website and bundled offline app share the seafoam, cream, and sand palette and vector companion. Swift widgets and Scriptable include corresponding artwork, paired encouragement, and resting intervals. Existing reduced-motion support keeps poses static. Rebuild native apps/widgets and reinstall the Scriptable script to receive changes; native visuals require device or Xcode verification.
+
+## DMV 2027 preview
+
+The DC, Maryland and Virginia theme runs May 1–June 30, 2027 in the device’s local timezone. July 1 automatically becomes the residency celebration. Open `http://127.0.0.1:8088/?preview=dmv` locally and tap the bunny to cycle three scenes, using a ticking May 15 preview clock.
+
+| Activity | Pun | Affirmation |
+| --- | --- | --- |
+| DC museum visit | You’re a national treasure, Dr. Mimi. | Your curiosity and care make the world a brighter place. |
+| Maryland blue crab | You’re claw-some, hon. | Even when the day gets crabby, your kindness shines through. |
+| Virginia trail walk | Virginia is for lovers. I’m here for you. | One step at a time, meri jaan. You are so close to your next adventure. |
+
+Website and bundled app share the interactive artwork. Native widgets and Scriptable rotate the matching poses and messages on their existing refresh schedules. Rebuild the native targets or replace the Scriptable script to receive these changes; native visual verification requires an Apple device or Xcode.

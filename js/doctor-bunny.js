@@ -167,7 +167,123 @@
     if(activity==='stretch'){line([[27,84],[23,78]],'#cf92aa',2);line([[149,82],[155,75]],'#cf92aa',2);}
     if(activity==='nap'){text('Z',138,49+slow*2,17);text('z',151,35+slow*3,12);}
     if(activity==='celebrate'){heart(33,65,.7);heart(147,57,.8);for(let i=0;i<5;i++){ctx.fillStyle=i%2?pink:lavender;ctx.fillRect(20+i*34,22+(i%2)*9+slow*3,4,7);}}
-    if(season()) {
+    if(isNewYear(season())) {
+      // The same three scenes have static equivalents in both widget renderers.
+      shape('M70 60L90 23L110 60Z','#d6bee7');
+      line([[76,51],[104,51]],'#cfb075',4);ellipse(90,24,4,4,'#cfb075');
+      if(activity==='fireworks') {
+        const burst=motion.matches?1:Math.min(1,t/1.1);
+        for(const [x,y] of [[26,53],[151,38]]) for(let i=0;i<8;i++) {
+          const a=i*Math.PI/4,r=6+burst*12;
+          line([[x+Math.cos(a)*5,y+Math.sin(a)*5],[x+Math.cos(a)*r,y+Math.sin(a)*r]],i%2?'#ac8dc3':'#b59558',2);
+        }
+        ellipse(137,101,11,21,cream);heart(34,119,.6);
+      }
+      if(activity==='ringBell') {
+        ctx.save();ctx.translate(138,121);ctx.rotate(motion.matches?0:wiggle*.18);
+        shape('M-10 9Q-6 4-6-5Q0-16 6-5Q6 4 10 9Z','#e0bf7c');
+        ellipse(0,12,3,3,'#b59558');ctx.restore();ellipse(137,137,9,7,cream);
+        line([[152,109],[158,104]],'#b59558',2);
+      }
+      if(activity==='wishCard') {
+        box(63,136,56,36,'#f8eed8');line([[91,138],[91,170]],'#cfb075',1);
+        text('2027',68,153,10);heart(105,155,.5);
+        ellipse(61,156,8,10,cream);ellipse(122,156,8,10,cream);
+      }
+    }
+    if(season()==='dmv') {
+      ellipse(90,184,58,7,'#dce7df',null);
+      if(activity==='museum') {
+        shape('M114 135L138 121L162 135Z','#d6c8da');box(114,136,48,5,'#e8dce6',1);
+        for(const x of [119,135,151])box(x,141,6,30,'#e8dce6',1);
+        box(111,172,54,6,'#d6c8da',1);ellipse(119,153,8,9,cream);
+      }
+      if(activity==='blueCrab') {
+        for(const side of [-1,1]){
+          for(const y of [150,157,164])line([[90+side*18,y],[90+side*31,y-5]],'#7699b8',2);
+          line([[90+side*16,149],[90+side*28,137]],'#7699b8',3);
+          ellipse(90+side*29,134,7,8,'#9dbbd1');
+        }
+        ellipse(90,155,23,13,'#9dbbd1');ellipse(83,144,2,3,ink,null);ellipse(97,144,2,3,ink,null);
+        ellipse(63,166,8,7,cream);ellipse(117,166,8,7,cream);
+      }
+      if(activity==='trailWalk') {
+        shape('M130 173L143 145L157 173Z','#a6c3ac');shape('M127 159L143 132L160 159Z','#a6c3ac');
+        line([[143,169],[143,184]],'#8f7b6b',3);line([[122,143],[126,183]],'#8f7b6b',3);ellipse(121,148,8,9,cream);
+      }
+    }
+    if(season()==='beach') {
+      ellipse(90,184,57,8,'#ead8b6',null);
+      ellipse(148,36,12,12,'#efd18c',null);
+      if(activity==='sandcastle') {
+        box(116,158,43,24,'#e4c798',2);box(126,143,23,17,'#e4c798',2);
+        for(const x of [116,132,148])box(x,153,11,8,'#e4c798',1);
+        line([[137,143],[137,124]],'#8f7b6b',1.5);shape('M137 124L151 128L137 133Z','#d8958c');
+        shape('M131 182L131 172Q137 164 143 172L143 182Z','#b69770');
+        ellipse(122,148,8,9,cream);
+      }
+      if(activity==='seashell') {
+        shape('M124 145Q105 126 113 121Q116 111 124 119Q133 110 137 121Q147 128 124 145Z','#efc4ba');
+        line([[124,142],[116,124]],'#b78680',1);line([[124,142],[125,120]],'#b78680',1);line([[124,142],[135,125]],'#b78680',1);
+        ellipse(124,151,8,7,cream);
+      }
+      if(activity==='beachRead') {
+        box(62,140,57,33,'#a9cfc6',3);line([[90,142],[90,171]],'#688e85',1);
+        for(const y of [149,156,163]){line([[68,y],[83,y]],'#688e85',1);line([[97,y],[111,y]],'#688e85',1);}
+        ellipse(61,157,8,9,cream);ellipse(121,157,8,9,cream);
+      }
+    }
+    if(season()==='ramadan') {
+      shape('M40 28A17 17 0 1 0 56 52A18 18 0 0 1 40 28Z','#d3b77c');
+      box(50,174,82,15,'#9caec6',5);line([[57,180],[125,180]],'#f1dfba',2);
+      if(activity==='prayer') {
+        // Quiet raised paws; no bouncing during prayer.
+        ellipse(73,126,8,13,cream);ellipse(107,126,8,13,cream);
+        line([[75,128],[77,119]],'#c8b7b6',1);line([[105,128],[103,119]],'#c8b7b6',1);
+      }
+      if(activity==='iftarDate') {
+        ellipse(92,157,31,7,'#f4e6c9');
+        for(const x of [77,92,107]){ellipse(x,150,6,10,'#a4745b');line([[x,145],[x-1,154]],'#795443',1);}
+        ellipse(61,151,8,9,cream);ellipse(124,151,8,9,cream);
+      }
+      if(activity==='fasting') {
+        ellipse(76,151,10,7,cream);ellipse(104,151,10,7,cream);
+        line([[79,153],[99,153]],'#c8b7b6',1);
+        text('sabr',135,130,11);
+      }
+    }
+    if(season()==='mardi') {
+      shape('M68 58L65 40L79 48L90 32L101 48L115 40L112 58Z','#e5cb87');
+      for(const x of [76,90,104])ellipse(x,54,2.5,2.5,x===90?'#9eb58b':'#b096c6',null);
+      for(let i=0;i<13;i++) {const a=i*Math.PI/12;ellipse(90+24*Math.cos(a),122+17*Math.sin(a),2.5,2.5,['#ae91c4','#97ae84','#d1b16a'][i%3],null);}
+      if(activity==='crawfish') {
+        const lift=motion.matches?1:Math.max(0,Math.min(1,t/1.4,(4.8-t)/1.2));
+        ctx.save();ctx.translate(0,-lift*18);
+        ellipse(92,163,34,6,'#eee4f3');
+        ellipse(92,149,9,16,'#e49b88');
+        for(let y=150;y<163;y+=5)line([[85,y],[99,y]],'#b87472',1);
+        shape('M87 161L80 170L92 167L104 170L97 161Z','#e49b88');
+        line([[85,144],[73,139],[73,131]],'#b87472',2);line([[99,144],[111,139],[111,131]],'#b87472',2);
+        shape('M73 133Q61 128 66 117L73 124L79 117Q85 129 73 133Z','#e49b88');
+        shape('M111 133Q99 128 104 117L111 124L117 117Q123 129 111 133Z','#e49b88');
+        ellipse(89,139,1.4,1.4,ink,null);ellipse(95,139,1.4,1.4,ink,null);
+        ellipse(59,157,8,9,cream);ellipse(126,157,8,9,cream);ctx.restore();
+      }
+      if(activity==='catchBeads') {
+        const drop=motion.matches?1:Math.min(1,t/1.7);
+        const y=24+drop*76;
+        for(let i=0;i<18;i++){const a=i*Math.PI*2/18;ellipse(143+16*Math.cos(a),y+22*Math.sin(a),3,3,['#ae91c4','#97ae84','#d1b16a'][i%3]);}
+        line([[136,140],[145,123]],ink,3);ellipse(145,123,10,7,cream);
+      }
+      if(activity==='kingCake') {
+        ellipse(91,162,35,7,'#eee4f3');ellipse(91,148,27,14,'#dfbb82');
+        ellipse(91,144,25,10,'#fff9ee');
+        for(const [x,color] of [[74,'#ae91c4'],[91,'#97ae84'],[108,'#d1b16a']])line([[x-3,141],[x+3,148]],color,5);
+        ellipse(91,143,9,4,'#dfbb82');ellipse(64,153,8,9,cream);ellipse(119,153,8,9,cream);
+        if(!motion.matches)ellipse(91,110,3,1.5+Math.abs(wiggle)*2,ink,null);
+      }
+    }
+    if(season()==='fall' || season()==='halloween') {
       if(activity==='scarfCoffee' || season()==='fall') {
         box(65,122,52,10,'#c293b2',4);box(101,128,12,28,'#c293b2',3);
         line([[102,150],[111,150]],'#f8d9b4',3);
@@ -207,6 +323,26 @@
   function chooseMessage(next){
     if(finished) return 'You did it, Dr. Mimi. So proud of you!';
     const turn=messageIndex++;
+    if(season()==='dmv') {
+      const scene=DMV_SCENES.find(scene=>scene.activity===next);
+      return scene ? `${scene.pun} ${scene.affirmation}` : 'Three places, one favorite person. Almost home, meri jaan.';
+    }
+    if(season()==='beach') {
+      const scene=BEACH_SCENES.find(scene=>scene.activity===next);
+      return scene ? `${scene.pun} ${scene.affirmation}` : 'A little sunshine, a whole lot of love. Take a shore break, Mimi.';
+    }
+    if(season()==='ramadan') {
+      const scene=RAMADAN_SCENES.find(scene=>scene.activity===next);
+      return scene ? `${scene.pun} ${scene.affirmation}` : 'Ramadan Mubarak, meri jaan. May this month bring you peace.';
+    }
+    if(season()==='mardi') {
+      const scene=MARDI_SCENES.find(scene=>scene.activity===next);
+      return scene ? `${scene.pun} ${scene.affirmation}` : 'A little krewe, a whole lot of love. You belong at the heart of it, Mimi.';
+    }
+    if(isNewYear(season())) {
+      const scene=NEW_YEAR_SCENES.find(scene=>scene.activity===next);
+      return scene ? `${scene.pun} ${scene.affirmation}` : (season()==='newyear' ? 'Happy New Year, meri jaan. This is your graduation year.' : 'A fresh year ahead. The same love, always.');
+    }
     if(season()) {
       const messages = {catchLeaf:'You’re un-be-leaf-able, Dr. Mimi.', scarfCoffee:'I love you a latte, meri jaan.',
         gatherLeaves:'You autumn know how proud I am.', pumpkin:'You’re the pick of the patch, meri jaan.'};
@@ -223,7 +359,7 @@
   function schedule(delay=7000){clearTimeout(timer);if(active&&!document.hidden)timer=setTimeout(advance,delay);}
   // Taps and automatic activities share a cursor, so a tap always moves forward.
   function nextActivity(){
-    const choices=season() ? ['catchLeaf','wave','scarfCoffee','heartbeat','gatherLeaves','read','pumpkin','nap'] : activities;
+    const choices=season()==='dmv' ? DMV_SCENES.map(scene=>scene.activity) : season()==='beach' ? BEACH_SCENES.map(scene=>scene.activity) : season()==='ramadan' ? RAMADAN_SCENES.map(scene=>scene.activity) : season()==='mardi' ? MARDI_SCENES.map(scene=>scene.activity) : isNewYear(season()) ? NEW_YEAR_SCENES.map(scene=>scene.activity) : season() ? ['catchLeaf','wave','scarfCoffee','heartbeat','gatherLeaves','read','pumpkin','nap'] : activities;
     let next=choices[index++%choices.length];
     if(next===activity) next=choices[index++%choices.length];
     return next;
@@ -254,5 +390,10 @@
     }
   }
   new MutationObserver(checkMilestone).observe(countdown,{attributes:true,attributeFilter:['hidden'],childList:true,subtree:true});
+  let previousSeason=season();
+  new MutationObserver(()=>{
+    if(season()===previousSeason) return;
+    previousSeason=season();index=0;setActivity('rest');schedule();
+  }).observe(document.documentElement,{attributes:true,attributeFilter:['data-season']});
   setActivity('rest');schedule();checkMilestone();
 })();

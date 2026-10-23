@@ -125,3 +125,77 @@ footer { display: flex; justify-content: center; align-items: center; gap: 14px;
 .fall #progress-fill { background:linear-gradient(90deg,#c3a1c3,#e8aa7e); }
 .fall #seasonal-note svg g > path:first-child, .fall #seasonal-note svg g > path:nth-last-child(-n+2) { display:none; }
 #seasonal-note span { line-height:1.6; min-height:3.2em; max-width:100%; letter-spacing:.6px; }
+
+/* Pearl surfaces and small, contained bursts keep the countdown in focus. */
+:root.new-year { --ink:#554b68; --muted:#71617f; --pink:#895b83; background:#f3effa; }
+.new-year body { background:radial-gradient(ellipse at 10% 20%,#eee2fa,transparent 48%),radial-gradient(ellipse at 95% 65%,#f7e7ca,transparent 48%); }
+.new-year #countdown { background:#fffdfaf5; border-color:#e4d9ed; }
+.new-year #seasonal-note svg { display:none; }
+.new-year #seasonal-note { margin-bottom:6px; }
+.new-year #countdown > .eyebrow { display:none; }
+.new-year .details > div { background:#f2edf8; border-color:#e4d9ee; }
+.new-year .details > div:nth-child(2n) { background:#faf2e2; border-color:#eadfc8; }
+.new-year #progress-fill { background:linear-gradient(90deg,#baa4d4,#d8b775); }
+#new-year-note { position:relative; padding:16px 8px 18px; margin-bottom:14px; border-bottom:1px solid #e9deef; }
+#new-year-note > span { font-size:9px; font-weight:700; letter-spacing:1.8px; color:var(--muted); }
+#new-year-note h2 { font:400 clamp(27px,5vw,38px)/1.15 Georgia,serif; letter-spacing:-.7px; margin:12px 0 9px; }
+#new-year-note p { font-size:12px; line-height:1.6; margin:0 auto; max-width:290px; }
+.year-sparkles { display:flex; justify-content:center; gap:32px; height:30px; margin-bottom:14px; }
+.year-sparkles i { width:25px; height:25px; background:#c3a16a; clip-path:polygon(50% 0,57% 35%,85% 15%,65% 43%,100% 50%,65% 57%,85% 85%,57% 65%,50% 100%,43% 65%,15% 85%,35% 57%,0 50%,35% 43%,15% 15%,43% 35%); }
+.year-sparkles i:nth-child(2) { background:#aa8cc4; transform:scale(1.2); }
+[data-season=newyear] .year-sparkles i { animation:year-burst 1.6s ease-out infinite; }
+@keyframes year-burst { 0% { opacity:.4; scale:.65; } 60%,100% { opacity:1; scale:1; } }
+#doctor-bunny:active canvas { opacity:.8; }
+@media (prefers-reduced-motion:reduce) { .year-sparkles i { animation:none !important; } }
+@media (prefers-contrast:more) { .new-year #countdown { background:#fffdfa; border-color:#71617f; } }
+
+/* Carnival color lives in the details; the day count keeps center stage. */
+:root.ramadan { --ink:#3e4e68; --muted:#5f6e83; --pink:#526785; background:#e9eef6; }
+.ramadan body { background:radial-gradient(ellipse at 10% 15%,#dce5f1,transparent 50%),radial-gradient(ellipse at 95% 75%,#f5ebd5,transparent 50%); }
+.ramadan #countdown { background:#fffdf8f5; border-color:#d5deea; }
+.ramadan #seasonal-note svg { display:none; }
+.ramadan #seasonal-note::before { content:""; width:28px; height:28px; border-radius:50%; box-shadow:-8px 5px 0 #b49559; transform:translate(5px,-4px); }
+.ramadan .details > div { background:#eaf0f7; border-color:#d5deea; }
+.ramadan .details > div:nth-child(2n) { background:#f5eedf; border-color:#e8dcc1; }
+.ramadan #progress-fill { background:linear-gradient(90deg,#8fa4bf,#c7ad74); }
+.ramadan .sky .spark { background:#a5b6cb; }
+.ramadan .year-sparkles { display:none; }
+@media (prefers-contrast:more) { .ramadan #countdown { background:#fffdf8; border-color:#5f6e83; } }
+:root.mardi { --ink:#534564; --muted:#6e607b; --pink:#82559d; background:#f1edf8; }
+.mardi body { background:radial-gradient(ellipse at 12% 25%,#e8dcf4,transparent 48%),radial-gradient(ellipse at 95% 65%,#e1eddc,transparent 48%); }
+.mardi #countdown { background:#fffdf8f5; border-color:#e3d8ed; }
+.mardi #seasonal-note svg { display:none; }
+.mardi #seasonal-note::before { content:""; width:110px; height:40px; background:radial-gradient(circle,#a68abc 3px,transparent 4px) 0 0/14px 14px,radial-gradient(circle,#92aa82 3px,transparent 4px) 7px 7px/14px 14px; clip-path:polygon(0 0,50% 65%,100% 0,100% 30%,50% 100%,0 30%); }
+.mardi .details > div { background:#f0e7f8; border-color:#e0d2ec; }
+.mardi .details > div:nth-child(2n) { background:#eaf1e6; border-color:#d5e2cc; }
+.mardi .details > div:nth-child(3n) { background:#faf1da; border-color:#ebdfbd; }
+.mardi #progress-fill { background:linear-gradient(90deg,#ae91c4,#99b08a,#d4b46c); }
+.mardi .sky .spark { background:#b89bc9; }
+.mardi .sky .s2 { background:#a2b88e; }
+@media (prefers-contrast:more) { .mardi #countdown { background:#fffdf8; border-color:#6e607b; } }
+
+/* A quiet shoreline: color and small vector props carry the theme. */
+:root.beach { --ink:#365d57; --muted:#56746c; --pink:#3f756b; background:#e5f2ee; }
+.beach body { background:radial-gradient(ellipse at 10% 15%,#d6ebe6,transparent 50%),radial-gradient(ellipse at 95% 75%,#f5e7cf,transparent 50%); }
+.beach #countdown { background:#fffdf7f5; border-color:#d1e3dc; }
+.beach #seasonal-note svg,.beach .year-sparkles { display:none; }
+.beach #seasonal-note::before { content:""; width:24px; height:24px; border-radius:50%; background:#e6c276; box-shadow:0 0 0 5px #f5e7cf; }
+.beach .details > div { background:#e5f1eb; border-color:#cfe2d9; }
+.beach .details > div:nth-child(2n) { background:#f7eedc; border-color:#e7dcc2; }
+.beach #progress-fill { background:linear-gradient(90deg,#91bdb0,#dec28e); }
+.beach .sky .spark { background:#9dc8ba; }
+.beach #bunny-message { color:#56746c; }
+@media (prefers-contrast:more) { .beach #countdown { background:#fffdf7; border-color:#56746c; } }
+
+/* River blue, Virginia sage and a soft blush: a little love across the DMV. */
+:root.dmv { --ink:#454761; --muted:#68677d; --pink:#68658c; background:#edf0f7; }
+.dmv body { background:radial-gradient(ellipse at 10% 15%,#e0e8f3,transparent 50%),radial-gradient(ellipse at 95% 75%,#f7e3e9,transparent 50%); }
+.dmv #countdown { background:#fffcfaf5; border-color:#dedeea; }
+.dmv #seasonal-note svg,.dmv .year-sparkles { display:none; }
+.dmv #seasonal-note::before { content:""; width:25px; height:20px; background:linear-gradient(#a8b8cf 0 15%,transparent 15% 30%,#a8b8cf 30% 100%); clip-path:polygon(50% 0,100% 30%,90% 30%,90% 85%,100% 85%,100% 100%,0 100%,0 85%,10% 85%,10% 30%,0 30%); }
+.dmv .details > div { background:#e9edf6; border-color:#d8deeb; }
+.dmv .details > div:nth-child(2n) { background:#edf2e9; border-color:#dce6d5; }
+.dmv #progress-fill { background:linear-gradient(90deg,#a5b8cf,#b6c7a8,#d9afbd); }
+.dmv .sky .spark { background:#b9bbd3; }
+.dmv #bunny-message { color:#68677d; }
+@media (prefers-contrast:more) { .dmv #countdown { background:#fffcfa; border-color:#68677d; } }

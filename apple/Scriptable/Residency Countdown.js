@@ -36,14 +36,52 @@ function calculateCountdown(now, start = START, end = END) {
 }
 
 
-// One-off 2026 season, through US Thanksgiving, in the device's local calendar.
+// One-off seasons in the device's local calendar; end dates are exclusive.
 function seasonForDate(now) {
+  // Expected civil dates; Ramadan takes precedence during Carnival overlap.
+  if (now >= new Date(2027, 4, 1) && now < new Date(2027, 6, 1)) return 'dmv';
+  if (now >= new Date(2027, 3, 1) && now < new Date(2027, 4, 1)) return 'beach';
+  if (now >= new Date(2027, 1, 8) && now < new Date(2027, 2, 9)) return 'ramadan';
+  if (now >= new Date(2027, 0, 6) && now < new Date(2027, 1, 10)) return 'mardi';
+  if (now >= new Date(2026, 11, 25) && now < new Date(2027, 0, 1)) return 'nye';
+  if (now >= new Date(2027, 0, 1) && now < new Date(2027, 0, 2)) return 'newyear';
   if (now.getFullYear() !== 2026) return '';
   if (now.getMonth() === 9) return 'halloween';
   return now.getMonth() === 10 && now.getDate() <= 26 ? 'fall' : '';
 }
 function isHalloween(now) { return seasonForDate(now) === 'halloween'; }
+const NEW_YEAR_SCENES = [
+  { activity: 'fireworks', pun: 'You’re the spark of my year.', affirmation: 'You make the future look bright, meri jaan.' },
+  { activity: 'ringBell', pun: 'Ring in the year. You’ve already won my heart.', affirmation: 'Every little victory deserves to be celebrated.' },
+  { activity: 'wishCard', pun: 'My New Year’s resolution? More you.', affirmation: 'Your next chapter is worth believing in, Dr. Mimi.' }
+];
+function isNewYear(season) { return season === 'nye' || season === 'newyear'; }
+const MARDI_SCENES = [
+  { activity: 'crawfish', pun: 'You’re craw-some, Dr. Mimi.', affirmation: 'Even on the hard days, you bring so much heart.' },
+  { activity: 'catchBeads', pun: 'I bead-lieve in you, meri jaan.', affirmation: 'Every small win belongs in your parade.' },
+  { activity: 'kingCake', pun: 'You take the cake, my queen.', affirmation: 'You deserve a little sweetness between rounds.' }
+];
+const DMV_SCENES = [
+  { activity: 'museum', pun: 'You’re a national treasure, Dr. Mimi.', affirmation: 'Your curiosity and care make the world a brighter place.' },
+  { activity: 'blueCrab', pun: 'You’re claw-some, hon.', affirmation: 'Even when the day gets crabby, your kindness shines through.' },
+  { activity: 'trailWalk', pun: 'Virginia is for lovers. I’m here for you.', affirmation: 'One step at a time, meri jaan. You are so close to your next adventure.' }
+];
+const BEACH_SCENES = [
+  { activity: 'sandcastle', pun: 'You’re sand-sational, Dr. Mimi.', affirmation: 'Every small step is building your beautiful next chapter.' },
+  { activity: 'seashell', pun: 'Shell yeah, I believe in you.', affirmation: 'Your kindness leaves something lovely wherever you go.' },
+  { activity: 'beachRead', pun: 'You deserve a shore break, meri jaan.', affirmation: 'Rest belongs in your story, too. Take a little time for yourself.' }
+];
+const RAMADAN_SCENES = [
+  { activity: 'prayer', pun: 'You’re my favorite prayer-tner.', affirmation: 'May your quiet moments bring peace to your busy days.' },
+  { activity: 'iftarDate', pun: 'My favorite date is iftar with you.', affirmation: 'You deserve sweetness, nourishment, and a gentle evening.' },
+  { activity: 'fasting', pun: 'Running on empty, still full of heart.', affirmation: 'Take it one moment at a time, meri jaan. Your effort matters.' }
+];
 function seasonalPun(season, index) {
+  if (season === 'dmv') return DMV_SCENES[((index % 3) + 3) % 3].pun;
+  if (season === 'beach') return BEACH_SCENES[((index % 3) + 3) % 3].pun;
+  if (season === 'ramadan') return RAMADAN_SCENES[((index % 3) + 3) % 3].pun;
+  if (season === 'mardi') return MARDI_SCENES[((index % 3) + 3) % 3].pun;
+  if (isNewYear(season)) return NEW_YEAR_SCENES[((index % 3) + 3) % 3].pun;
   const puns = ["You’re un-be-leaf-able, Dr. Mimi.", "I love you a latte, meri jaan.",
     "You autumn know how proud I am.", "You’re brew-tiful.", "Falling for you, one day at a time."];
   if (season === 'halloween') puns.push("You’re doing fang-tastic.", "A little boo, a lot of love.");
@@ -54,10 +92,30 @@ const BUNNY_ACTIONS = ["jump", "wave", "heartbeat", "notes", "read", "eat", "tea
 function activityForDate(now, complete) {
   if (complete) return "celebrate";
   const slot = Math.floor(now.getTime() / 1800000);
-  const actions = seasonForDate(now) ? ["catchLeaf", "scarfCoffee", "gatherLeaves", "pumpkin"] : BUNNY_ACTIONS;
+  const actions = seasonForDate(now) === 'dmv' ? DMV_SCENES.map(scene => scene.activity) : seasonForDate(now) === 'beach' ? BEACH_SCENES.map(scene => scene.activity) : seasonForDate(now) === 'ramadan' ? RAMADAN_SCENES.map(scene => scene.activity) : seasonForDate(now) === 'mardi' ? MARDI_SCENES.map(scene => scene.activity) : isNewYear(seasonForDate(now)) ? NEW_YEAR_SCENES.map(scene => scene.activity) : seasonForDate(now) ? ["catchLeaf", "scarfCoffee", "gatherLeaves", "pumpkin"] : BUNNY_ACTIONS;
   return slot % 2 === 0 ? "rest" : actions[((Math.floor(slot / 2) % actions.length) + actions.length) % actions.length];
 }
 function bunnyMessage(activity, now) {
+  if (seasonForDate(now) === 'dmv') {
+    const scene = DMV_SCENES.find(scene => scene.activity === activity);
+    return scene ? scene.pun + ' ' + scene.affirmation : 'Three places, one favorite person. Almost home, meri jaan.';
+  }
+  if (seasonForDate(now) === 'beach') {
+    const scene = BEACH_SCENES.find(scene => scene.activity === activity);
+    return scene ? scene.pun + ' ' + scene.affirmation : 'A little sunshine, a whole lot of love. Take a shore break, Mimi.';
+  }
+  if (seasonForDate(now) === 'ramadan') {
+    const scene = RAMADAN_SCENES.find(scene => scene.activity === activity);
+    return scene ? scene.pun + ' ' + scene.affirmation : 'Ramadan Mubarak, meri jaan. May this month bring you peace.';
+  }
+  if (seasonForDate(now) === 'mardi') {
+    const scene = MARDI_SCENES.find(scene => scene.activity === activity);
+    return scene ? scene.pun + ' ' + scene.affirmation : 'A little krewe, a whole lot of love.';
+  }
+  if (isNewYear(seasonForDate(now))) {
+    const scene = NEW_YEAR_SCENES.find(scene => scene.activity === activity);
+    return scene ? scene.pun + ' ' + scene.affirmation : 'A fresh year. The same love, always.';
+  }
   if (seasonForDate(now)) return seasonalPun(seasonForDate(now), Math.floor(now.getTime() / 1800000));
   const messages = {
     jump: "One day closer to your next chapter.", wave: "Hello, my favorite doctor.",
@@ -71,7 +129,7 @@ function bunnyMessage(activity, now) {
 }
 
 // Vector geometry from assets/bunny.svg, drawn locally: no downloads or extra files.
-function doctorBunny(activity = "rest", halloween = false, fall = false) {
+function doctorBunny(activity = "rest", halloween = false, fall = false, newYear = false, mardi = false, ramadan = false, beach = false) {
   const canvas = new DrawContext();
   canvas.size = new Size(180, 220);
   canvas.opaque = false;
@@ -179,6 +237,89 @@ function doctorBunny(activity = "rest", halloween = false, fall = false) {
     ellipse(107,156,24,20,"#f3be97");line([[119,156],[122,151]],"#8c9c73",3);
     ellipse(113,163,2,3,"#886a76");ellipse(122,163,2,3,"#886a76");
   }
+  if (newYear) {
+    paint("#d6bee7","#886a76",2,[["M",70,60],["L",90,23],["L",110,60],["Z"]]);
+    line([[76,51],[104,51]],"#cfb075",4);ellipse(86,20,8,8,"#cfb075");
+  }
+  if (activity === "fireworks") {
+    for (const [x,y] of [[26,53],[151,38]]) for(let i=0;i<8;i++) {
+      const a=i*Math.PI/4;
+      line([[x+Math.cos(a)*5,y+Math.sin(a)*5],[x+Math.cos(a)*18,y+Math.sin(a)*18]],i%2?"#ac8dc3":"#b59558",2);
+    }
+    ellipse(126,80,22,42);heart(34,119);
+  }
+  if (activity === "ringBell") {
+    paint("#e0bf7c","#886a76",2,[["M",128,130],["Q",132,125,132,116],["Q",138,105,144,116],["Q",144,125,148,130],["Z"]]);
+    ellipse(135,130,6,6,"#b59558");ellipse(128,135,18,14);line([[152,109],[158,104]],"#b59558");
+  }
+  if (activity === "wishCard") {
+    box(63,136,56,36,"#f8eed8");line([[91,138],[91,170]],"#cfb075",1);
+    for(let y=145;y<165;y+=7)line([[69,y],[83,y]],"#cfb075",1);
+    heart(105,158);ellipse(53,146,16,20);ellipse(114,146,16,20);
+  }
+  if(activity === 'museum') {
+    paint('#d6c8da','#685d65',1.5,[['M',114,135],['L',138,121],['L',162,135],['Z']]);box(114,136,48,5,'#d6c8da');
+    for(const x of [119,135,151])box(x,141,6,30,'#f8f1e9');box(111,172,54,6,'#d6c8da');ellipse(111,144,16,18);
+  }
+  if(activity === 'blueCrab') {
+    for(const side of [-1,1]){
+      for(const y of [150,157,164])line([[90+side*18,y],[90+side*31,y-5]],'#7699b8',2);
+      line([[90+side*16,149],[90+side*28,137]],'#7699b8',3);ellipse(83+side*29,126,14,16,'#9dbbd1');
+    }
+    ellipse(67,142,46,26,'#9dbbd1');ellipse(81,141,4,6,'#685d65');ellipse(95,141,4,6,'#685d65');ellipse(55,159,16,14);ellipse(109,159,16,14);
+  }
+  if(activity === 'trailWalk') {
+    for(const [y,w] of [[173,28],[159,33]])paint('#a6c3ac','#685d65',1.5,[['M',143-w/2,y],['L',143,y-28],['L',143+w/2,y],['Z']]);
+    line([[143,169],[143,184]],'#8f7b6b',3);line([[122,143],[126,183]],'#8f7b6b',3);ellipse(113,139,16,18);
+  }
+  if (beach) { ellipse(33,176,114,16,"#ead8b6",null);ellipse(136,24,24,24,"#efd18c",null); }
+  if (activity === 'sandcastle') {
+    box(116,158,43,24,"#e4c798");box(126,143,23,17,"#e4c798");
+    for(const x of [116,132,148])box(x,153,11,8,"#e4c798");
+    line([[137,143],[137,124]],"#8f7b6b",1.5);line([[137,126],[150,129]],"#d8958c",5);
+    box(131,169,12,13,"#b69770");ellipse(114,139,16,18);
+  }
+  if (activity === 'seashell') {
+    paint("#efc4ba","#b78680",1.5,[["M",124,145],["Q",105,126,113,121],["Q",116,111,124,119],["Q",133,110,137,121],["Q",147,128,124,145],["Z"]]);
+    for(const x of [116,125,135])line([[124,142],[x,122]],"#b78680",1);ellipse(116,144,16,14);
+  }
+  if (activity === 'beachRead') {
+    box(62,140,57,33,"#a9cfc6");line([[90,142],[90,171]],"#688e85",1);
+    for(const y of [149,156,163]){line([[68,y],[83,y]],"#688e85",1);line([[97,y],[111,y]],"#688e85",1);}
+    ellipse(53,148,16,18);ellipse(113,148,16,18);
+  }
+  if (ramadan) {
+    ellipse(22,25,30,30,"#d3b77c");ellipse(30,20,26,28,"#e9eef6",null);
+    box(50,174,82,15,"#9caec6");line([[57,180],[125,180]],"#f1dfba",2);
+  }
+  if (activity === 'prayer') { ellipse(65,113,16,26);ellipse(99,113,16,26); }
+  if (activity === 'iftarDate') {
+    ellipse(61,150,62,14,"#f4e6c9");
+    for(const x of [77,92,107]){ellipse(x-6,140,12,20,"#a4745b");line([[x,145],[x-1,154]],"#795443",1);}
+    ellipse(53,142,16,18);ellipse(116,142,16,18);
+  }
+  if (activity === 'fasting') { ellipse(66,144,20,14);ellipse(94,144,20,14);line([[79,153],[99,153]],"#c8b7b6",1); }
+  if (mardi) {
+    paint("#e5cb87","#886a76",2,[["M",68,58],["L",65,40],["L",79,48],["L",90,32],["L",101,48],["L",115,40],["L",112,58],["Z"]]);
+    for(let i=0;i<13;i++){const a=i*Math.PI/12;ellipse(87+24*Math.cos(a),119+17*Math.sin(a),5,5,["#ae91c4","#97ae84","#d1b16a"][i%3]);}
+  }
+  if (activity === 'crawfish') {
+    ellipse(58,140,68,12,"#eee4f3");ellipse(83,115,18,32,"#e49b88");
+    for(let y=126;y<144;y+=5)line([[85,y],[99,y]],"#b87472",1);
+    line([[85,122],[73,117],[73,109]],"#b87472");line([[99,122],[111,117],[111,109]],"#b87472");
+    for(const x of [73,111])paint("#e49b88","#886a76",2,[["M",x,111],["Q",x-12,106,x-7,95],["L",x,102],["L",x+6,95],["Q",x+12,107,x,111],["Z"]]);
+    paint("#e49b88","#886a76",1,[["M",87,143],["L",80,150],["L",92,147],["L",104,150],["L",97,143],["Z"]]);
+    ellipse(51,128,16,18);ellipse(118,128,16,18);
+  }
+  if (activity === 'catchBeads') {
+    for(let i=0;i<18;i++){const a=i*Math.PI/9;ellipse(140+16*Math.cos(a),97+22*Math.sin(a),6,6,["#ae91c4","#97ae84","#d1b16a"][i%3]);}
+    line([[136,140],[145,123]]);ellipse(135,116,20,14);
+  }
+  if (activity === 'kingCake') {
+    ellipse(56,155,70,14,"#eee4f3");ellipse(64,134,54,28,"#dfbb82");ellipse(66,134,50,20,"#fff9ee");
+    for(const [x,color] of [[74,"#ae91c4"],[91,"#97ae84"],[108,"#d1b16a"]])line([[x-3,141],[x+3,148]],color,5);
+    ellipse(82,139,18,8,"#dfbb82");ellipse(56,144,16,18);ellipse(111,144,16,18);
+  }
   return canvas.getImage();
 }
 
@@ -188,12 +329,17 @@ const activity = activityForDate(now, state.complete);
 const season = state.complete ? "" : seasonForDate(now);
 const halloween = season === "halloween";
 if (season) { COLORS.pink = new Color("9a5274"); COLORS.track = new Color("e8d9ef"); }
+if (isNewYear(season)) COLORS.pink = new Color("895b83");
+if (season === 'dmv') COLORS.pink = new Color('68658c');
+if (season === 'beach') COLORS.pink = new Color('3f756b');
+if (season === 'ramadan') COLORS.pink = new Color('526785');
+if (season === 'mardi') COLORS.pink = new Color("82559d");
 const family = config.widgetFamily || "large";
 const small = family === "small";
 const large = family === "large" || family === "extraLarge";
 const widget = new ListWidget();
 const backdrop = new LinearGradient();
-backdrop.colors = (season ? ["ffe3cd", "f4e3f2", "e3cff5"] : ["fff8f3", "f8e5ef", "eee7f4"]).map(hex => new Color(hex));
+backdrop.colors = (season === 'dmv' ? ['e5eaf5','edf0f7','f7e3e9'] : season === 'beach' ? ['d6ebe6','e5f2ee','f5e7cf'] : season === 'ramadan' ? ['dce5f1','e9eef6','f5ebd5'] : season === 'mardi' ? ["e8dcf4", "f1edf8", "e1eddc"] : isNewYear(season) ? ["eee2fa", "f3effa", "f7e7ca"] : season ? ["ffe3cd", "f4e3f2", "e3cff5"] : ["fff8f3", "f8e5ef", "eee7f4"]).map(hex => new Color(hex));
 backdrop.locations = [0, 0.5, 1];
 backdrop.startPoint = new Point(0, 0);
 backdrop.endPoint = new Point(1, 1);
@@ -226,7 +372,7 @@ function centered(parent, value, size, color = COLORS.ink, serif = false) {
   return label;
 }
 function bunny(parent, height) {
-  const image = parent.addImage(doctorBunny(activity, halloween, season === "fall"));
+  const image = parent.addImage(doctorBunny(activity, halloween, season === "fall", isNewYear(season), season === 'mardi', season === 'ramadan', season === 'beach'));
   image.imageSize = new Size(height * 180 / 220, height);
   image.applyFittingContentMode();
 }
@@ -310,6 +456,14 @@ if (state.complete) {
     centered(card, "So proud of you. Always.", 12, COLORS.pink, true);
   }
 } else {
+  if (season === 'dmv') centered(card, 'All roads lead to you', small ? 9 : 12, COLORS.pink, true);
+  if (season === 'beach') centered(card, 'Shore looks good on you', small ? 9 : 12, COLORS.pink, true);
+  if (season === 'ramadan') centered(card, 'Ramadan Mubarak, meri jaan', small ? 9 : 12, COLORS.pink, true);
+  if (season === 'mardi') centered(card, "A little krewe, a lot of love", small ? 9 : 12, COLORS.pink, true);
+  if (isNewYear(season)) {
+    centered(card, season === "newyear" ? "Hello, 2027." : "With love, into 2027", small ? 10 : 13, COLORS.pink, true);
+    if (large) centered(card, season === "newyear" ? "Your graduation year is here." : "The best is yet to come.", 11, COLORS.muted);
+  }
   const hero = card.addStack();
   hero.centerAlignContent();
   hero.addSpacer();

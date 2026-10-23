@@ -45,13 +45,22 @@ async function run(family, date, inApp) {
   }
  }
  assert.ok(images.length > 0);
+ const season = require('../../js/countdown.js').seasonForDate(new Date(date));
+ if(season==='mardi') assert.ok(texts.includes('A little krewe, a lot of love'));
+ if(season==='ramadan') assert.ok(texts.includes('Ramadan Mubarak, meri jaan'));
+ if(season==='dmv') assert.ok(texts.includes('All roads lead to you'));
+ if(season==='beach') assert.ok(texts.includes('Shore looks good on you'));
 }
 (async()=>{
 for(const inApp of [false,true]) for(const family of ['small','medium','large','extraLarge',undefined]) {
- for(const date of [new Date(2022,6,1),new Date(2026,9,7),new Date(2026,9,31,23,59,59),new Date(2026,10,1),new Date(2026,10,26,23,59,59),new Date(2026,10,27),new Date(2027,5,30,23,59,59),new Date(2027,6,1),new Date(2028,0,1)]) await run(family,date,inApp);
+ for(const date of [new Date(2027,4,1),new Date(2027,4,15,12,30),new Date(2027,5,30,23,59,59),new Date(2027,6,1)]) await run(family,date,inApp);
+ for(const date of [new Date(2027,2,31,23,59,59),new Date(2027,3,1),new Date(2027,3,15,12,30),new Date(2027,3,30,23,59,59),new Date(2027,4,1)]) await run(family,date,inApp);
+ for(const date of [new Date(2027,1,7,23,59,59),new Date(2027,1,8),new Date(2027,2,8,23,59,59),new Date(2027,2,9)]) await run(family,date,inApp);
+ for(const date of [new Date(2027,0,5,23,59,59),new Date(2027,0,6),new Date(2027,1,9,23,59,59),new Date(2027,1,10),new Date(2028,0,6)]) await run(family,date,inApp);
+ for(const date of [new Date(2022,6,1),new Date(2026,9,7),new Date(2026,9,31,23,59,59),new Date(2026,10,1),new Date(2026,10,26,23,59,59),new Date(2026,10,27),new Date(2026,11,24,23,59,59),new Date(2026,11,25),new Date(2026,11,31,23,59,59),new Date(2027,0,1),new Date(2027,0,2),new Date(2027,5,30,23,59,59),new Date(2027,6,1),new Date(2028,0,1)]) await run(family,date,inApp);
 }
 assert.ok(!/\p{Extended_Pictographic}/u.test(code));
-console.log('90 widget/in-app family/date scenarios passed: launch routing, countdown, celebration, native timers, refresh boundaries, artwork execution, and no emoji.');
+console.log('320 widget/in-app family/date scenarios passed: launch routing, countdown, celebration, native timers, refresh boundaries, artwork execution, and no emoji.');
 
 })().catch(e=>{console.error(e);process.exit(1)});
 
@@ -77,6 +86,34 @@ for(const [date,expected] of [[new Date(2026,9,31),'halloween'],[new Date(2026,1
  scope.date=date; assert.equal(vm.runInContext('seasonForDate(date)',scope),expected);
 }
 const web=require('../../js/countdown.js');
+const mardiDrawings=new Set();
+for(const scene of web.MARDI_SCENES) {
+ const result=vm.runInContext(`doctorBunny('${scene.activity}',false,false,false,true)`,scope);
+ mardiDrawings.add(JSON.stringify(result));
+ for(const part of result)for(const c of part.commands)for(const n of c.slice(1))assert(Number.isFinite(n));
+ scope.date=new Date(2027,1,6);
+ assert.equal(vm.runInContext(`bunnyMessage('${scene.activity}',date)`,scope),scene.pun+' '+scene.affirmation);
+}
+assert.equal(mardiDrawings.size,3);
+for(const date of [new Date(2027,0,5,23,59,59),new Date(2027,0,6),new Date(2027,1,9,23,59,59),new Date(2027,1,10),new Date(2028,0,6)]) {
+ scope.date=date;assert.equal(vm.runInContext('seasonForDate(date)',scope),web.seasonForDate(date));
+}
+scope.date=new Date(2027,0,6);
+const mardiActions=new Set();
+for(let slot=0;slot<12;slot++) { scope.date=new Date(2027,0,6,0,slot*30);mardiActions.add(vm.runInContext('activityForDate(date,false)',scope)); }
+assert.deepEqual([...mardiActions].sort(),['rest','crawfish','catchBeads','kingCake'].sort());
+const newYearDrawings=new Set();
+for(const scene of web.NEW_YEAR_SCENES) {
+ const result=vm.runInContext(`doctorBunny('${scene.activity}',false,false,true)`,scope);
+ newYearDrawings.add(JSON.stringify(result));
+ for(const part of result)for(const c of part.commands)for(const n of c.slice(1))assert(Number.isFinite(n));
+ scope.date=new Date(2027,0,1);
+ assert.equal(vm.runInContext(`bunnyMessage('${scene.activity}',date)`,scope),scene.pun+' '+scene.affirmation);
+}
+assert.equal(newYearDrawings.size,3);
+for(const date of [new Date(2026,11,24,23,59,59),new Date(2026,11,25),new Date(2026,11,31,23,59,59),new Date(2027,0,1),new Date(2027,0,2)]) {
+ scope.date=date;assert.equal(vm.runInContext('seasonForDate(date)',scope),web.seasonForDate(date));
+}
 for(let day=1;day<=30;day++)for(const month of [9,10,11]) {
  scope.date=new Date(2026,month,day);
  assert.equal(vm.runInContext('seasonForDate(date)',scope),web.seasonForDate(scope.date));
@@ -87,4 +124,47 @@ for(let slot=0;slot<40;slot++) {scope.date=new Date(slot*1800000);assert.equal(v
 for(const date of [new Date(2020,0,1),new Date(2022,6,1),new Date(2027,6,1),new Date(2028,0,1)]){scope.date=date;const s=vm.runInContext('calculateCountdown(date)',scope);assert(s.progress>=0&&s.progress<=100);for(const k of ['months','weeks','days','hours','minutes','seconds','totalDays'])assert(s[k]>=0);}
 
 console.log("11 distinct drawings and 40 pose slots passed.");
+
+const ramadanDrawings=new Set();
+for(const scene of web.RAMADAN_SCENES) {
+ const result=vm.runInContext(`doctorBunny('${scene.activity}',false,false,false,false,true)`,scope);
+ ramadanDrawings.add(JSON.stringify(result));
+ for(const part of result)for(const c of part.commands)for(const n of c.slice(1))assert(Number.isFinite(n));
+ scope.date=new Date(2027,1,15);
+ assert.equal(vm.runInContext(`bunnyMessage('${scene.activity}',date)`,scope),scene.pun+' '+scene.affirmation);
+}
+assert.equal(ramadanDrawings.size,3);
+for(const date of [new Date(2027,1,7,23,59,59),new Date(2027,1,8),new Date(2027,2,8,23,59,59),new Date(2027,2,9),new Date(2028,1,8)]) {
+ scope.date=date;assert.equal(vm.runInContext('seasonForDate(date)',scope),web.seasonForDate(date));
+}
+const ramadanActions=new Set();
+for(let slot=0;slot<12;slot++) { scope.date=new Date(2027,1,15,0,slot*30);ramadanActions.add(vm.runInContext('activityForDate(date,false)',scope)); }
+assert.deepEqual([...ramadanActions].sort(),['rest','prayer','iftarDate','fasting'].sort());
+console.log('Ramadan boundaries, paired messages, three distinct drawings, and scheduling passed.');
+const beachDrawings=new Set();
+for(const scene of web.BEACH_SCENES) {
+ const result=vm.runInContext(`doctorBunny('${scene.activity}',false,false,false,false,false,true)`,scope);
+ beachDrawings.add(JSON.stringify(result));
+ for(const part of result)for(const c of part.commands)for(const n of c.slice(1))assert(Number.isFinite(n));
+ scope.date=new Date(2027,3,15);
+ assert.equal(vm.runInContext(`bunnyMessage('${scene.activity}',date)`,scope),scene.pun+' '+scene.affirmation);
+}
+assert.equal(beachDrawings.size,3);
+const beachActions=new Set();
+for(let slot=0;slot<12;slot++) { scope.date=new Date(2027,3,15,0,slot*30);beachActions.add(vm.runInContext('activityForDate(date,false)',scope)); }
+assert.deepEqual([...beachActions].sort(),['rest','sandcastle','seashell','beachRead'].sort());
+console.log('Beach paired messages, three distinct drawings, and scheduling passed.');
+const dmvDrawings=new Set();
+for(const scene of web.DMV_SCENES) {
+ const result=vm.runInContext(`doctorBunny('${scene.activity}')`,scope);
+ dmvDrawings.add(JSON.stringify(result));
+ for(const part of result)for(const c of part.commands)for(const n of c.slice(1))assert(Number.isFinite(n));
+ scope.date=new Date(2027,4,15);
+ assert.equal(vm.runInContext(`bunnyMessage('${scene.activity}',date)`,scope),scene.pun+' '+scene.affirmation);
+}
+assert.equal(dmvDrawings.size,3);
+const dmvActions=new Set();
+for(let slot=0;slot<12;slot++) { scope.date=new Date(2027,4,15,0,slot*30);dmvActions.add(vm.runInContext('activityForDate(date,false)',scope)); }
+assert.deepEqual([...dmvActions].sort(),['rest','museum','blueCrab','trailWalk'].sort());
+console.log('DMV paired messages, three drawings and scheduling passed.');
 }
